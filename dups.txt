@@ -1,0 +1,6 @@
+row 37 has duplicated ID
+
+rows 926, 946, 990 have a duplicate name
+926==26 Nome: André Fortes Alves
+946==97 Nome: Erik Andrew Ferreira Martins
+990==362 Nome: Samuel de Oliveira
