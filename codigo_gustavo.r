@@ -22,14 +22,23 @@ recode_classroom <- function(dataset) {
     return (dataset)
 }
 
+normalize_skewness<-function(dataframe, columns) {
+
+    for (colname in columns) {
+        dataframe[colname]=log(dataframe[colname])
+    }
+
+    return (dataframe)
+}
 
 
-
-
+#Turma should be a factor variable since is a category
+data$Turma=factor(data$Turma)
+data$Sexo=factor(data$Sexo)
 
 data$DN_Calc=as.integer(floor(as.numeric(difftime(data$Recrutamento, data$DN, units="days")/365)))
-data$IMC_0=data$Peso_0/((data$Altura_0/100)^2)
-data$IMC_6m=data$Peso_6m/((data$Altura_6m/100)^2)
+## data$IMC_0=data$Peso_0/((data$Altura_0/100)^2)
+## data$IMC_6m=data$Peso_6m/((data$Altura_6m/100)^2)
 
 #These participants have less than 8 years, so we force them to the 8 year group
 data[data$ID==422,]$DN_Calc=8
@@ -43,8 +52,10 @@ data[data$ID==915,]$DN_Calc=8
 #ID 899 tem 14 anos mas vai ficar fora da analise
 data=data[data$ID!=899,]
 
-#Skewness normalization
-data$Peso_0
+#Skewness normalization on continous only for those with positive skewness
+skewcolumns=c("Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","CHCM_1","RDW_1","Leucocitos_1","Neutofiloa_1","Bastonetes_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA-IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1")
+
+data=normalize_skewness(data, skewcolumns)
 
 control_group=data[grepl("Pq Bristol", data$Escola),]
 control_group=control_group[(is.na(control_group$Exclusao) | control_group$Exclusao=="Transferido" | control_group$Exclusao=="Transferida"),]
@@ -64,21 +75,14 @@ expr_group=recode_classroom(expr_group)
 # Linfocitos_atipicos_1
 #Because they have zeros or NAs (should find out why this happened)
 
-control_group_cont=subset(control_group, select=c("ID","DN_Calc","ZIMC_0","IMC_0","IMC_6m","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Perc_Gordura_1","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","VCM_1","HCM_1","CHCM_1","RDW_1","Plaquetas_1","Leucocitos_1","Neutofiloa_1","Bastonetes_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_atipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","Calcio_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA-IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1"))
+control_group_cont=subset(control_group, select=c("ID","DN_Calc","ZIMC_0","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Perc_Gordura_1","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","VCM_1","HCM_1","CHCM_1","RDW_1","Plaquetas_1","Leucocitos_1","Neutofiloa_1","Bastonetes_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","Calcio_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA-IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1"))
 
 
 # IDs 65,251,928 have lots of body composition data and should not be considered as z-score<1
 # IDs 131, 213 have less body composition data but I will do the same as in the case above
-control_group_noweight=subset(control_group_cont, (control_group_cont$ZIMC_0<1 | is.na(control_group_cont$ZIMC_0)) & control_group_cont$ID!=65 & control_group_cont$ID!=251 & control_group_cont$ID!=928 & control_group_cont$ID!=131 & control_group_cont$ID!=213, select=c("ID","DN_Calc","IMC_0","IMC_6m","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m"))
+control_group_noweight=subset(control_group_cont, (control_group_cont$ZIMC_0<1 | is.na(control_group_cont$ZIMC_0)) & control_group_cont$ID!=65 & control_group_cont$ID!=251 & control_group_cont$ID!=928 & control_group_cont$ID!=131 & control_group_cont$ID!=213, select=c("ID","DN_Calc","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m"))
 
-# Blastos_1
-# Promielocitos_1
-# Mielocitos_1
-# Metamielocitos_1
-# Linfocitos_atipicos_1
-
-
-control_group_oweight=subset(control_group_cont, control_group_cont$ZIMC_0>=1 | control_group_cont$ID==65 | control_group_cont$ID==251 | control_group_cont$ID==928 | control_group_cont$ID==131 | control_group_cont$ID==213, select=c("ID","DN_Calc","IMC_0","IMC_6m","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Perc_Gordura_1","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","VCM_1","HCM_1","CHCM_1","RDW_1","Plaquetas_1","Leucocitos_1","Neutofiloa_1","Bastonetes_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","Calcio_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA-IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1"))
+control_group_oweight=subset(control_group_cont, control_group_cont$ZIMC_0>=1 | control_group_cont$ID==65 | control_group_cont$ID==251 | control_group_cont$ID==928 | control_group_cont$ID==131 | control_group_cont$ID==213, select=c("ID","DN_Calc","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Perc_Gordura_1","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","VCM_1","HCM_1","CHCM_1","RDW_1","Plaquetas_1","Leucocitos_1","Neutofiloa_1","Bastonetes_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","Calcio_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA-IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1"))
 
 ## aggr(control_group_noweight, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(control_group_noweight), cex.axis=.7, gap=3, ylab=c("Histogram of missing data","Pattern"))
 
@@ -91,13 +95,14 @@ control_group_oweight=subset(control_group_cont, control_group_cont$ZIMC_0>=1 | 
 ## Linfocitos_atipicos_1
 # For the same reason as in the control group!
 
-expr_group_cont=subset(expr_group, select=c("ID","DN_Calc","ZIMC_0","IMC_0","IMC_6m","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Perc_Gordura_1","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","VCM_1","HCM_1","CHCM_1","RDW_1","Plaquetas_1","Leucocitos_1","Neutofiloa_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","Calcio_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA-IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1"))
+expr_group_cont=subset(expr_group, select=c("ID","DN_Calc","ZIMC_0","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Perc_Gordura_1","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","VCM_1","HCM_1","CHCM_1","RDW_1","Plaquetas_1","Leucocitos_1","Neutofiloa_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","Calcio_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA-IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1"))
 
 
 #IDs 549, 579 have body composition data and should not be considered as having z-score for imc below 1
-expr_group_noweight=subset(expr_group_cont, (is.na(expr_group_cont$ZIMC_0) | expr_group_cont$ZIMC_0<1) & expr_group_cont$ID!=549 & expr_group_cont$ID!=579, select=c("ID","DN_Calc","IMC_0","IMC_6m","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m"))
+expr_group_noweight=subset(expr_group_cont, (is.na(expr_group_cont$ZIMC_0) | expr_group_cont$ZIMC_0<1) & expr_group_cont$ID!=549 & expr_group_cont$ID!=579, select=c("ID","DN_Calc","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m"))
 
-expr_group_oweight=subset(expr_group_cont, expr_group_cont$ZIMC_0>=1 | expr_group_cont$ID==549 | expr_group_cont$ID==579, select=c("ID","DN_Calc","IMC_0","IMC_6m","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Perc_Gordura_1","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","VCM_1","HCM_1","CHCM_1","RDW_1","Plaquetas_1","Leucocitos_1","Neutofiloa_1","Blastos_1","Promielocitos_1","Mielocitos_1","Metamielocitos_1","Bastonetes_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_atipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","Calcio_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA-IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1"))
+
+expr_group_oweight=subset(expr_group_cont, expr_group_cont$ZIMC_0>=1 | expr_group_cont$ID==549 | expr_group_cont$ID==579, select=c("ID","DN_Calc","Turma","Sexo","Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Perc_Gordura_1","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","VCM_1","HCM_1","CHCM_1","RDW_1","Plaquetas_1","Leucocitos_1","Neutofiloa_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","Calcio_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA-IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1"))
 
 
 ## md.pattern(control_group_noweight)
@@ -117,8 +122,8 @@ control_group_noweight_pred = control_group_noweight_imp_tmp$pred
 control_group_noweight_meth = control_group_noweight_imp_tmp$meth
 control_group_noweight_pred[,"ID"]=0
 control_group_noweight_meth["ID"]=""
-control_group_noweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
-control_group_noweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
+## control_group_noweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
+## control_group_noweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
 control_group_noweight_imp= mice(control_group_noweight, pred=control_group_noweight_pred, meth=control_group_noweight_meth, m=50, maxit=300, seed= 23109)
 #Here is missing pool method, first we need to define model of interest!
 control_group_noweight_complete=complete(control_group_noweight_imp)
