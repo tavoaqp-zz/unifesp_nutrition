@@ -133,7 +133,7 @@ control_group_noweight_pred[,"ID"]=0
 control_group_noweight_meth["ID"]=""
 ## control_group_noweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
 ## control_group_noweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
-control_group_noweight_imp= mice(control_group_noweight, pred=control_group_noweight_pred, meth=control_group_noweight_meth, m=50, maxit=20, seed= 23109)
+control_group_noweight_imp= mice(control_group_noweight, pred=control_group_noweight_pred, meth=control_group_noweight_meth, m=50, maxit=10, seed= 23109)
 #Here is missing pool method, first we need to define model of interest!
 control_group_noweight_complete=complete(control_group_noweight_imp)
 
@@ -145,7 +145,7 @@ control_group_oweight_pred[,"ID"]=0
 control_group_oweight_meth["ID"]=""
 ## control_group_oweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
 ## control_group_oweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
-control_group_oweight_imp= mice(control_group_oweight, pred=control_group_oweight_pred, meth=control_group_oweight_meth, m=50, maxit=20, seed= 23142355)
+control_group_oweight_imp= mice(control_group_oweight, pred=control_group_oweight_pred, meth=control_group_oweight_meth, m=50, maxit=10, seed= 23142355)
 #Here is missing pool method, first we need to define model of interest!
 control_group_oweight_complete=complete(control_group_oweight_imp)
 
@@ -157,7 +157,7 @@ expr_group_noweight_pred[,"ID"]=0
 expr_group_noweight_meth["ID"]=""
 ## expr_group_noweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
 ## expr_group_noweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
-expr_group_noweight_imp= mice(expr_group_noweight, pred=expr_group_noweight_pred, meth=expr_group_noweight_meth, m=50, maxit=20, seed= 2310997)
+expr_group_noweight_imp= mice(expr_group_noweight, pred=expr_group_noweight_pred, meth=expr_group_noweight_meth, m=50, maxit=10, seed= 2310997)
 #Here is missing pool method, first we need to define model of interest!
 expr_group_noweight_complete=complete(expr_group_noweight_imp)
 
@@ -169,7 +169,7 @@ expr_group_oweight_pred[,"ID"]=0
 expr_group_oweight_meth["ID"]=""
 ## expr_group_oweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
 ## expr_group_oweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
-expr_group_oweight_imp= mice(expr_group_oweight, pred=expr_group_oweight_pred, meth=expr_group_oweight_meth, m=50, maxit=20, seed= 23142593)
+expr_group_oweight_imp= mice(expr_group_oweight, pred=expr_group_oweight_pred, meth=expr_group_oweight_meth, m=50, maxit=10, seed= 23142593)
 #Here is missing pool method, first we need to define model of interest!
 expr_group_oweight_complete=complete(expr_group_oweight_imp)
 
