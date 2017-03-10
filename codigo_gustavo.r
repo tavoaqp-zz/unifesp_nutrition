@@ -60,7 +60,7 @@ data$Basofilo_1=ifelse(data$Basofilo_1==0.0,NA,data$Basofilo_1)
 data$Eosilofilos_1=ifelse(data$Eosilofilos_1==0.0,NA,data$Eosilofilos_1)
 data$HOMA_IR_1=ifelse(data$HOMA_IR_1==0.0,NA,data$HOMA_IR_1)
 
-skewcolumns=c("Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Eritrocitos_1","Hemoglobina_1","Hematocrito_1","CHCM_1","RDW_1","Leucocitos_1","Neutofiloa_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA_IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1")
+skewcolumns=c("Peso_0","Peso_6m","Altura_0","Altura_6m","Peso_CP","Altura_CP","Gordura_Kg_1","MM_Kg_1","TMB_1","Agua_corpo_l_1","Perc_Peso_do_corpo_1","Perc_MM_1","Bioresistencia_1","Reatancia_1","C._Quadril_1","C._Cintura_1","C._Pescoco_1","DCT_1_1","DCT_2_1","DCT_3_1","DCS_1_1","DCS_2_1","DCS__3_1","DCP__1_1","DCP__2_1","DCP_3_1","Hemoglobina_1","Hematocrito_1","CHCM_1","RDW_1","Leucocitos_1","Neutofiloa_1","Segmentados_1","Eosilofilos_1","Basofilo_1","Linfocitos_tipicos_1","Linfocitos_totais_1","Monocitos_1","Glicemia_1","Creatinina_1","Colesterol_Total_1","HDL_1","Nao_HDL_1","LDL_1","VLDL_1","Triglicerideos_1","Acido_Urico_1","Fosforo_1","TGO_1","TGP_1","GGT_1","Fosfatase_1","Insulina_1","PTH_1","HOMA_IR_1","PAS1_1","PAS2_1","PAS3_1","PAD1_1","PAD2_1","PAD3_1")
 
 data=normalize_skewness(data, skewcolumns)
 
@@ -133,7 +133,7 @@ control_group_noweight_pred[,"ID"]=0
 control_group_noweight_meth["ID"]=""
 ## control_group_noweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
 ## control_group_noweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
-control_group_noweight_imp= mice(control_group_noweight, pred=control_group_noweight_pred, meth=control_group_noweight_meth, m=50, maxit=10, seed= 23109)
+control_group_noweight_imp= mice(control_group_noweight, pred=control_group_noweight_pred, meth=control_group_noweight_meth, m=70, maxit=5, seed= 23109)
 #Here is missing pool method, first we need to define model of interest!
 control_group_noweight_complete=complete(control_group_noweight_imp)
 
@@ -143,33 +143,10 @@ control_group_oweight_pred = control_group_oweight_imp_tmp$pred
 control_group_oweight_meth = control_group_oweight_imp_tmp$meth
 control_group_oweight_pred[,"ID"]=0
 control_group_oweight_meth["ID"]=""
-## for (colname in skewcolumns) {
-##     control_group_oweight_meth[colname]="norm"
-## }
-control_group_oweight_meth["MM_Kg_1"]="norm"
-control_group_oweight_meth["Perc_MM_1"]="norm"
-control_group_oweight_meth["Altura_CP"]="norm"
-control_group_oweight_meth["Bioresistencia_1"]="norm"
-control_group_oweight_meth["Reatancia_1"]="norm"
-control_group_oweight_meth["C._Quadril_1"]="norm"
-control_group_oweight_meth["C._Cintura_1"]="norm"
-control_group_oweight_meth["C._Pescoco_1"]="norm"
-control_group_oweight_meth["DCT_1_1"]="norm"
-control_group_oweight_meth["DCT_2_1"]="norm"
-control_group_oweight_meth["DCT_3_1"]="norm"
-control_group_oweight_meth["DCS_1_1"]="norm"
-control_group_oweight_meth["DCS_2_1"]="norm"
-control_group_oweight_meth["DCS__3_1"]="norm"
-control_group_oweight_meth["DCP__1_1"]="norm"
-control_group_oweight_meth["DCP__2_1"]="norm"
-control_group_oweight_meth["DCP_3_1"]="norm"
-control_group_oweight_meth["Eritrocitos_1"]="norm"
-control_group_oweight_meth["Hemoglobina_1"]="norm"
-## control_group_oweight_meth["Hematocrito_1"]="norm"
 
 ## control_group_oweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
 ## control_group_oweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
-control_group_oweight_imp= mice(control_group_oweight, pred=control_group_oweight_pred, meth=control_group_oweight_meth, m=5, maxit=5, seed= 23142355)
+control_group_oweight_imp= mice(control_group_oweight, pred=control_group_oweight_pred, meth=control_group_oweight_meth, m=70, maxit=5, seed= 23142355)
 #Here is missing pool method, first we need to define model of interest!
 control_group_oweight_complete=complete(control_group_oweight_imp)
 
@@ -181,7 +158,7 @@ expr_group_noweight_pred[,"ID"]=0
 expr_group_noweight_meth["ID"]=""
 ## expr_group_noweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
 ## expr_group_noweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
-expr_group_noweight_imp= mice(expr_group_noweight, pred=expr_group_noweight_pred, meth=expr_group_noweight_meth, m=50, maxit=10, seed= 2310997)
+expr_group_noweight_imp= mice(expr_group_noweight, pred=expr_group_noweight_pred, meth=expr_group_noweight_meth, m=70, maxit=5, seed= 2310997)
 #Here is missing pool method, first we need to define model of interest!
 expr_group_noweight_complete=complete(expr_group_noweight_imp)
 
@@ -193,7 +170,7 @@ expr_group_oweight_pred[,"ID"]=0
 expr_group_oweight_meth["ID"]=""
 ## expr_group_oweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
 ## expr_group_oweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
-expr_group_oweight_imp= mice(expr_group_oweight, pred=expr_group_oweight_pred, meth=expr_group_oweight_meth, m=50, maxit=10, seed= 23142593)
+expr_group_oweight_imp= mice(expr_group_oweight, pred=expr_group_oweight_pred, meth=expr_group_oweight_meth, m=70, maxit=5, seed= 23142593)
 #Here is missing pool method, first we need to define model of interest!
 expr_group_oweight_complete=complete(expr_group_oweight_imp)
 
