@@ -66,13 +66,13 @@ data=normalize_skewness(data, skewcolumns)
 
 control_group=data[grepl("Pq Bristol", data$Escola),]
 control_group=control_group[(is.na(control_group$Exclusao) | control_group$Exclusao=="Transferido" | control_group$Exclusao=="Transferida"),]
-control_group=recode_classroom(control_group)
+## control_group=recode_classroom(control_group)
 
 #There are two participants in control group that have ZIMC_0==-0.8 and NA but also have body composition data
 
 expr_group=data[grepl("C. Mar", data$Escola),]
 expr_group=expr_group[(is.na(expr_group$Exclusao) | expr_group$Exclusao=="Transferido" | expr_group$Exclusao=="Transferida"),]
-expr_group=recode_classroom(expr_group)
+## expr_group=recode_classroom(expr_group)
 
 #Fetch all continue rows. Left behind:
 # Blastos_1
@@ -143,9 +143,33 @@ control_group_oweight_pred = control_group_oweight_imp_tmp$pred
 control_group_oweight_meth = control_group_oweight_imp_tmp$meth
 control_group_oweight_pred[,"ID"]=0
 control_group_oweight_meth["ID"]=""
+## for (colname in skewcolumns) {
+##     control_group_oweight_meth[colname]="norm"
+## }
+control_group_oweight_meth["MM_Kg_1"]="norm"
+control_group_oweight_meth["Perc_MM_1"]="norm"
+control_group_oweight_meth["Altura_CP"]="norm"
+control_group_oweight_meth["Bioresistencia_1"]="norm"
+control_group_oweight_meth["Reatancia_1"]="norm"
+control_group_oweight_meth["C._Quadril_1"]="norm"
+control_group_oweight_meth["C._Cintura_1"]="norm"
+control_group_oweight_meth["C._Pescoco_1"]="norm"
+control_group_oweight_meth["DCT_1_1"]="norm"
+control_group_oweight_meth["DCT_2_1"]="norm"
+control_group_oweight_meth["DCT_3_1"]="norm"
+control_group_oweight_meth["DCS_1_1"]="norm"
+control_group_oweight_meth["DCS_2_1"]="norm"
+control_group_oweight_meth["DCS__3_1"]="norm"
+control_group_oweight_meth["DCP__1_1"]="norm"
+control_group_oweight_meth["DCP__2_1"]="norm"
+control_group_oweight_meth["DCP_3_1"]="norm"
+control_group_oweight_meth["Eritrocitos_1"]="norm"
+control_group_oweight_meth["Hemoglobina_1"]="norm"
+## control_group_oweight_meth["Hematocrito_1"]="norm"
+
 ## control_group_oweight_meth["IMC_0"]="~I(Peso_0/(Altura_0/100)^2)"
 ## control_group_oweight_meth["IMC_6m"]="~I(Peso_6m/(Altura_6m/100)^2)"
-control_group_oweight_imp= mice(control_group_oweight, pred=control_group_oweight_pred, meth=control_group_oweight_meth, m=50, maxit=10, seed= 23142355)
+control_group_oweight_imp= mice(control_group_oweight, pred=control_group_oweight_pred, meth=control_group_oweight_meth, m=5, maxit=5, seed= 23142355)
 #Here is missing pool method, first we need to define model of interest!
 control_group_oweight_complete=complete(control_group_oweight_imp)
 
